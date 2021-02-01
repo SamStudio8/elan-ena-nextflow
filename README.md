@@ -2,13 +2,17 @@
 
 A Nextflow pipeline for smoothly transferring fresh consensus sequences to ENA via `webin-cli`.
 
- ## Parameters
- 
+## Parameters
+
+### Required command line parameters
+
  | Name | Description |
  | ---- | ----------- |
  | `study` | ENA study identifier (`PRJEB`) |
  | `manifest` |  Assembly metadata manifest |
  | `webin_jar` | Path to `webin-cli` JAR ([releases](https://github.com/enasequence/webin-cli/releases) |
+
+### Required environment variables
 
 Additionally, you will need to set the following parameters in your environment:
 
@@ -17,9 +21,15 @@ Additionally, you will need to set the following parameters in your environment:
  | `WEBIN_USER` | EMBL-EBI Webin username |
  | `WEBIN_PASS` | EMBL-EBI Webin password |
 
- 
- ## Invocation
- 
+### Optional command line parameters
+
+| Name | Description |
+| ---- | ----------- |
+| `ascp` | Enable `ascp` transfer with `webin-cli` (`ascp` must be on your `PATH`) |
+
+
+## Invocation
+
 ```
 export WEBIN_USER='Webin-00000'
 export WEBIN_PASS='hunter2'

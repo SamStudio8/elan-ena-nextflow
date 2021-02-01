@@ -4,6 +4,11 @@ if( !params.study ) error "Missing ENA `study` param"
 if( !params.manifest ) error "Missing ena.csv `manifest` param"
 if( !params.webin_jar ) error "Missing `webin_jar` path param"
 
+flag_ascp = ""
+if ( params.ascp ){
+    flag_ascp = "-ascp"
+}
+
 Channel
     .fromPath(params.manifest)
     .splitCsv(header:true, sep:'\t')
@@ -72,6 +77,6 @@ process webin_validate {
 
     script:
     """
-    java -jar ${params.webin_jar} -context genome -userName \$WEBIN_USER -password \$WEBIN_PASS -manifest ${ena_manifest} -centerName '${row.center_name}' -ascp -validate
+    java -jar ${params.webin_jar} -context genome -userName \$WEBIN_USER -password \$WEBIN_PASS -manifest ${ena_manifest} -centerName '${row.center_name}' ${flag_ascp} -validate
     """
 }
