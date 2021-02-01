@@ -74,6 +74,6 @@ process webin_validate {
 
     script:
     """
-    java -jar ${params.webin} -context genome -userName ${params.webin_user} -password ${params.webin_pass} -manifest ${ena_manifest} -centerName '${row.center_name}' -ascp -validate
+    java -jar ${params.webin_jar} -context genome -userName ${params.webin_user} -password ${params.webin_pass} -manifest ${ena_manifest} -centerName '${row.center_name}' -ascp -validate
     """
 }
