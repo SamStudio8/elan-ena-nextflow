@@ -1,6 +1,5 @@
 #!/usr/bin/env nextflow
 
-if( !params.githash ) error "Missing `githash` param (git --git-dir /path/to/elan/.git rev-parse --short HEAD)"
 if( !params.study ) error "Missing ENA `study` param"
 if( !params.webin ) error "Missing `webin` JAR path param"
 if( !params.manifest ) error "Missing ena.csv `manifest` param"
@@ -63,7 +62,7 @@ FASTA ${ena_fasta}
 AUTHORS ${row.authors}
 ADDRESS ${row.address}
 SUBMISSION_TOOL SAMSTUDIO8/ELAN-NEXTFLOW/ENA-A
-SUBMISSION_TOOL_VERSION g@${params.githash}" > ${row.climb_fn.baseName}.manifest.txt
+SUBMISSION_TOOL_VERSION g@${workflow.commitId}" > ${row.climb_fn.baseName}.manifest.txt
     """
 }
 
