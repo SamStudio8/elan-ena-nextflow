@@ -8,9 +8,9 @@ A Nextflow pipeline for smoothly transferring fresh consensus sequences to ENA v
 
  | Name | Description |
  | ---- | ----------- |
- | `study` | ENA study identifier (`PRJEB`) |
- | `manifest` |  Assembly metadata manifest |
- | `webin_jar` | Path to `webin-cli` JAR ([releases](https://github.com/enasequence/webin-cli/releases) |
+ | `--study` | ENA study identifier (`PRJEB`) |
+ | `--manifest` |  Assembly metadata manifest |
+ | `--webin_jar` | Path to `webin-cli` JAR ([releases](https://github.com/enasequence/webin-cli/releases) |
 
 ### Required environment variables
 
@@ -25,7 +25,8 @@ Additionally, you will need to set the following parameters in your environment:
 
 | Name | Description |
 | ---- | ----------- |
-| `ascp` | Enable `ascp` transfer with `webin-cli` (`ascp` must be on your `PATH`) |
+| `--ascp` | Enable `ascp` transfer with `webin-cli` (`ascp` must be on your `PATH`) |
+| `--test` | Enable `webin-cli` test mode |
 
 
 ## Invocation
@@ -36,7 +37,8 @@ export WEBIN_PASS='hunter2'
 nextflow run samstudio8/elan-ena-nextflow -r stable \
     --study PRJEB00000 \
     --manifest /path/to/manifest.tsv \
-    --webin_jar /path/to/webin-cli.jar
+    --webin_jar /path/to/webin-cli.jar \
+    --ascp --test
 ```
 
 To update a local copy:

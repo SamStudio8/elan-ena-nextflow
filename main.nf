@@ -8,6 +8,10 @@ flag_ascp = ""
 if ( params.ascp ){
     flag_ascp = "-ascp"
 }
+flag_test = ""
+if ( params.test ){
+    flag_test = "-test"
+}
 
 Channel
     .fromPath(params.manifest)
@@ -75,8 +79,23 @@ process webin_validate {
     input:
     tuple row, file(ena_fasta), file(chr_list), file(ena_manifest) from webin_validate_ch
 
+    errorStrategy 'ignore' //# Drop assemblies that fail to validate
+
+    output:
+    tuple row, file(ena_fasta), file(chr_list), file(ena_manifest) into webin_submit_ch
+
     script:
     """
     java -jar ${params.webin_jar} -context genome -userName \$WEBIN_USER -password \$WEBIN_PASS -manifest ${ena_manifest} -centerName '${row.center_name}' ${flag_ascp} -validate
+    """
+}
+
+process webin_submit {
+    input:
+    tuple row, file(ena_fasta), file(chr_list), file(ena_manifest) from webin_submit_ch
+
+    script:
+    """
+    java -jar ${params.webin_jar} -context genome -userName \$WEBIN_USER -password \$WEBIN_PASS -manifest ${ena_manifest} -centerName '${row.center_name}' ${flag_ascp} -submit ${flag_test}
     """
 }
