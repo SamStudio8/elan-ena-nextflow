@@ -61,7 +61,7 @@ CHROMOSOME_LIST ${chr_list}
 FASTA ${ena_fasta}
 AUTHORS ${row.authors}
 ADDRESS ${row.address}
-SUBMISSION_TOOL SAMSTUDIO8/ELAN-NEXTFLOW/ENA-A
+SUBMISSION_TOOL ${workflow.repository}
 SUBMISSION_TOOL_VERSION g@${workflow.commitId}" > ${row.climb_fn.baseName}.manifest.txt
     """
 }
