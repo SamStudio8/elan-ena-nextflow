@@ -62,7 +62,7 @@ FASTA ${ena_fasta}
 AUTHORS ${row.authors}
 ADDRESS ${row.address}
 SUBMISSION_TOOL ${workflow.repository}
-SUBMISSION_TOOL_VERSION g@${workflow.commitId}" > ${row.climb_fn.baseName}.manifest.txt
+SUBMISSION_TOOL_VERSION ${workflow.revision}@${workflow.commitId.substring(0,7)}" > ${row.climb_fn.baseName}.manifest.txt
     """
 }
 
