@@ -3,14 +3,28 @@
 if( !params.study ) error "Missing ENA `study` param"
 if( !params.manifest ) error "Missing ena.csv `manifest` param"
 if( !params.webin_jar ) error "Missing `webin_jar` path param"
+if( !params.out ) error "Missing `out` path param"
 
 flag_ascp = ""
-if ( params.ascp ){
+if( params.ascp ){
     flag_ascp = "-ascp"
 }
 flag_test = ""
-if ( params.test ){
+if( params.test ){
     flag_test = "-test"
+}
+
+out_name = file(params.out).name
+out_dir = file(params.out).parent
+
+
+workflow_repo = "samstudio8/elan-ena-nextflow"
+workflow_v = "unknown"
+workflow_cid = ""
+if( workflow.commitId ){
+    workflow_repo = workflow.repository
+    workflow_v = workflow.revision
+    workflow_cid = workflow.commitId.substring(0, 7)
 }
 
 Channel
@@ -20,7 +34,6 @@ Channel
     .set{manifest_ch}
 
 process prep_fasta {
-    label 'bear'
 
     input:
     val row from manifest_ch
@@ -70,8 +83,8 @@ CHROMOSOME_LIST ${chr_list}
 FASTA ${ena_fasta}
 AUTHORS ${row.authors}
 ADDRESS ${row.address}
-SUBMISSION_TOOL ${workflow.repository}
-SUBMISSION_TOOL_VERSION ${workflow.revision}@${workflow.commitId.substring(0,7)}" > ${row.climb_fn.baseName}.manifest.txt
+SUBMISSION_TOOL ${workflow_repo}
+SUBMISSION_TOOL_VERSION ${workflow_v}@${workflow_cid}" > ${row.climb_fn.baseName}.manifest.txt
     """
 }
 
@@ -91,11 +104,34 @@ process webin_validate {
 }
 
 process webin_submit {
+    errorStrategy 'ignore' //# Drop assemblies that fail to validate
+
     input:
     tuple row, file(ena_fasta), file(chr_list), file(ena_manifest) from webin_submit_ch
+
+    output:
+    tuple row, file(ena_fasta), file(chr_list), file(ena_manifest), file("genome/${row.assemblyname.replaceAll('#', '_')}/submit/receipt.xml") into webin_parse_ch
 
     script:
     """
     java -jar ${params.webin_jar} -context genome -userName \$WEBIN_USER -password \$WEBIN_PASS -manifest ${ena_manifest} -centerName '${row.center_name}' ${flag_ascp} -submit ${flag_test}
     """
 }
+
+process receipt_parser {
+    conda "$baseDir/environments/receipt.yaml"
+
+    input:
+    tuple row, file(ena_fasta), file(chr_list), file(ena_manifest), file(ena_receipt) from webin_parse_ch
+
+    output:
+    file("${row.climb_fn.baseName}.accession.txt") into accession_report_ch
+
+    script:
+    """
+    parse_receipt.py ${ena_manifest} ${ena_receipt} > ${row.climb_fn.baseName}.accession.txt
+    """
+}
+
+accession_report_ch
+    .collectFile(keepHeader: true, name: "${out_name}", storeDir: "${out_dir}")

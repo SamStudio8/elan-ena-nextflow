@@ -11,6 +11,7 @@ A Nextflow pipeline for smoothly transferring fresh consensus sequences to ENA v
  | `--study` | ENA study identifier (`PRJEB`) |
  | `--manifest` |  Assembly metadata manifest |
  | `--webin_jar` | Path to `webin-cli` JAR ([releases](https://github.com/enasequence/webin-cli/releases) |
+ | `--out` | Path to write successful accessions table |
 
 ### Required environment variables
 
@@ -38,6 +39,7 @@ nextflow run samstudio8/elan-ena-nextflow -r stable \
     --study PRJEB00000 \
     --manifest /path/to/manifest.tsv \
     --webin_jar /path/to/webin-cli.jar \
+    --out hoot.accessions.txt \
     --ascp --test
 ```
 
