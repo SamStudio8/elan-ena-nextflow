@@ -2,8 +2,6 @@
 
 if( !params.study ) error "Missing ENA `study` param"
 if( !params.manifest ) error "Missing ena.csv `manifest` param"
-if( !params.webin_user ) error "Missing `webin_user` auth param"
-if( !params.webin_pass ) error "Missing `webin_pass` auth param"
 if( !params.webin_jar ) error "Missing `webin_jar` path param"
 
 Channel
@@ -74,6 +72,6 @@ process webin_validate {
 
     script:
     """
-    java -jar ${params.webin_jar} -context genome -userName ${params.webin_user} -password ${params.webin_pass} -manifest ${ena_manifest} -centerName '${row.center_name}' -ascp -validate
+    java -jar ${params.webin_jar} -context genome -userName \$WEBIN_USER -password \$WEBIN_PASS -manifest ${ena_manifest} -centerName '${row.center_name}' -ascp -validate
     """
 }

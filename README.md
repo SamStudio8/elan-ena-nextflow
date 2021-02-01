@@ -8,18 +8,24 @@ A Nextflow pipeline for smoothly transferring fresh consensus sequences to ENA v
  | ---- | ----------- |
  | `study` | ENA study identifier (`PRJEB`) |
  | `manifest` |  Assembly metadata manifest |
- | `webin_user` | EMBL-EBI Webin username |
- | `webin_pass` | EMBL-EBI Webin password |
  | `webin_jar` | Path to `webin-cli` JAR ([releases](https://github.com/enasequence/webin-cli/releases) |
+
+Additionally, you will need to set the following parameters in your environment:
+
+ | Name | Description |
+ | ---- | ----------- |
+ | `WEBIN_USER` | EMBL-EBI Webin username |
+ | `WEBIN_PASS` | EMBL-EBI Webin password |
+
  
  ## Invocation
  
 ```
+export WEBIN_USER='Webin-00000'
+export WEBIN_PASS='hunter2'
 nextflow run samstudio8/elan-ena-nextflow -r stable \
     --study PRJEB00000 \
     --manifest /path/to/manifest.tsv \
-    --webin_user Webin-00000 \
-    --webin_pass hunter2 \
     --webin_jar /path/to/webin-cli.jar
 ```
 
