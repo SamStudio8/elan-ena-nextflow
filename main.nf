@@ -13,13 +13,17 @@ flag_test = ""
 if( params.test ){
     flag_test = "-test"
 }
+description_s = ""
+if( params.description ){
+    description_s = params.description
+}
 
 out_name = file(params.out).name
 out_dir = file(params.out).parent
 
 
 workflow_repo = "samstudio8/elan-ena-nextflow"
-workflow_v = "unknown"
+workflow_v = workflow.manifest.version
 workflow_cid = ""
 if( workflow.commitId ){
     workflow_repo = workflow.repository
@@ -68,12 +72,14 @@ process generate_manifest {
     tuple row, file(ena_fasta), file(chr_list), file("${row.climb_fn.baseName}.manifest.txt") into webin_validate_ch
 
     script:
+    def engine = new groovy.text.SimpleTemplateEngine()
+    this_description = engine.createTemplate(description_s).make(['row':row]).toString()
     """
     echo "STUDY ${params.study}
 SAMPLE ${row.ena_sample_id}
 RUN_REF ${row.ena_run_id}
 ASSEMBLYNAME ${row.assemblyname}
-DESCRIPTION ${row.published_name}
+DESCRIPTION """ << this_description << """
 ASSEMBLY_TYPE COVID-19 outbreak
 MOLECULETYPE genomic RNA
 COVERAGE ${row.mean_cov}
@@ -129,7 +135,7 @@ process receipt_parser {
 
     script:
     """
-    parse_receipt.py ${ena_manifest} ${ena_receipt} > ${row.climb_fn.baseName}.accession.txt
+    parse_receipt.py ${ena_manifest} ${ena_receipt} ${row.published_name} > ${row.climb_fn.baseName}.accession.txt
     """
 }
 

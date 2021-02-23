@@ -2,15 +2,14 @@
 import sys
 from bs4 import BeautifulSoup as bs
 
-# usage: webin_to_majora.py <webin_manifest> <webin_output_xml>
+# usage: webin_to_majora.py <webin_manifest> <webin_output_xml> <published_name>
+published_name = sys.argv[3]
 
-assembly_name = published_name = None
+assembly_name = None
 for line in open(sys.argv[1]):
     k,v = line.strip().split(None, 1)
     if k == "ASSEMBLYNAME":
         assembly_name = v
-    elif k == "DESCRIPTION":
-        published_name = v
 
 if not assembly_name or not published_name:
     sys.exit(1)
