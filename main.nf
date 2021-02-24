@@ -5,6 +5,9 @@ if( !params.manifest ) error "Missing ena.csv `manifest` param"
 if( !params.webin_jar ) error "Missing `webin_jar` path param"
 if( !params.out ) error "Missing `out` path param"
 
+if( !System.getenv("WEBIN_USER") ) error '$WEBIN_USER unset'
+if( !System.getenv("WEBIN_PASS") ) error '$WEBIN_PASS unset'
+
 flag_ascp = ""
 if( params.ascp ){
     flag_ascp = "-ascp"
